@@ -74,7 +74,38 @@ stringstream de_abbreviator(string s){
 	return outstring;
 }
 
-string depunctuator(string s){
+
+// ======== dictionary declaration and members ==============
+class dictionary{
+	public:
+		void add_word( string s );
+		void print_all();
+		bool in_dict( string s );
+		string depunctuator( string s );
+	private:
+		vector<string>dict;
+};
+
+void dictionary::add_word( string s ){
+	string word { depunctuator( s ) };
+	dict.push_back( word );
+}
+
+void dictionary::print_all(){
+	for ( string word : dict ) 
+		cout << word << '\n';
+}
+
+bool dictionary::in_dict( string s ){
+	for ( string word : dict )
+	{
+		if ( word == s)
+			return true;
+	}
+	return false;
+}
+
+string dictionary::depunctuator(string s){
 	// replaces puctuation with whitespace and returns a new string
 	string cleanstring = "";
 	for ( char c : s )
@@ -95,10 +126,11 @@ string depunctuator(string s){
 
 void depunctuator_tests(){
 	// returns true if all tests run correctly	
-	if (!( depunctuator( "hello!" ) == "hello " ) ||
-		!( depunctuator( ".?;,!toad!" ) == "     toad " ) ||
-		!( depunctuator( "the largest hot-to" ) == "the largest hot to" ) ||
-		!( depunctuator( "black, berry!" ) == "black  berry " ) )
+	dictionary d = dictionary();
+	if (!( d.depunctuator( "hello!" ) == "hello " ) ||
+		!( d.depunctuator( ".?;,!toad!" ) == "     toad " ) ||
+		!( d.depunctuator( "the largest hot-to" ) == "the largest hot to" ) ||
+		!( d.depunctuator( "black, berry!" ) == "black  berry " ) )
 		error( "depuctuation failiure" );
 }
 
@@ -120,39 +152,24 @@ void de_abbreviator_tests(){
 		error( "de_abbreviation failiure3" );
 }
 
-// ======== dictionary declaration and members ==============
-class dictionary{
-	public:
-		void add_word(string s);
-		void print_all();
-		bool in_dict(string s);
-	private:
-		vector<string>dict;
-};
-
-void dictionary::add_word(string s){
-	dict.push_back(s);
-}
-
-void dictionary::print_all(){
-	for ( string word : dict ) 
-		cout << word << '\n';
-}
-
-bool dictionary::in_dict(string s){
-	for ( string word : dict )
-	{
-		if ( word == s)
-			return true;
-	}
-	return false;
-}
-
 int main(){
 	try
 	{
-	depunctuator_tests();
-	de_abbreviator_tests();
+	// tests start =================================
+	//depunctuator_tests();
+	//de_abbreviator_tests();
+	// tests end =================================== 
+
+	dictionary d = dictionary();
+	stringstream speech {"Hello, this is your Captain speaking."};
+	string word = "";
+	while ( speech >> word )
+	{
+		d.add_word(word);
+	}
+	d.print_all();
+	
+
 	}
 
 	catch ( runtime_error& e )
