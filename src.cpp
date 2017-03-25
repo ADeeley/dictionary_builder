@@ -1,8 +1,14 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <cassert>
+#include <vector>
 
 using namespace std;
+
+void error(string s){
+	throw runtime_error(s);
+}
 
 string lowerstring(string s){
 	// @pre string(s)
@@ -48,17 +54,17 @@ stringstream de_abbreviator(string s){
 	{
 		if ( lowerstring(word) == "don't" )
 		{
-			cout << lowerstring(word) << '\n';
+		//	cout << lowerstring(word) << '\n';
 			outstring << "do not ";
 		}
 		else if ( lowerstring(word) == "can't" )
 		{
-			cout << lowerstring(word) << '\n';
+		//	cout << lowerstring(word) << '\n';
 			outstring << "cannot ";
 		}
 		else if ( lowerstring(word) == "won't" )
 		{
-			cout << lowerstring(word) << '\n';
+		//	cout << lowerstring(word) << '\n';
 			outstring << "will not ";
 		}
 		else 
@@ -75,24 +81,60 @@ string depunctuator(string s){
 	{
 		if ( ispunct( c ) )
 		{
-			cout << c << " Ispunct\n";
+		//	cout << c << " Ispunct\n";
 			cleanstring += ' ';
 		}
 		else
 		{
-			cout << c << " notpunct\n";
+		//	cout << c << " notpunct\n";
 			cleanstring += c;
 		}
 	}
 	return cleanstring;
 }
 
+void depunctuator_tests(){
+	// returns true if all tests run correctly	
+	if (!( depunctuator( "hello!" ) == "hello " ) ||
+		!( depunctuator( ".?;,!toad!" ) == "     toad " ) ||
+		!( depunctuator( "the largest hot-to" ) == "the largest hot to" ) ||
+		!( depunctuator( "black, berry!" ) == "black  berry " ) )
+		error( "depuctuation failiure" );
+}
+
+// ======== dictionary declaration and members ==============
+
+class dictionary{
+	public:
+		void add_word(string s);
+		void print_all();
+		bool in_dict(string s);
+	private:
+		vector<string>dict;
+};
+
+void dictionary::add_word(string s){
+	dict.push_back(s);
+}
+
+void dictionary::print_all(){
+	for ( string word : dict ) 
+		cout << word << '\n';
+}
+
+bool dictionary::in_dict(string s){
+	for ( string word : dict )
+	{
+		if ( word == s)
+			return true;
+	}
+	return false;
+}
+
 int main(){
-	// Depunctuation tests ====================
-	cout << depunctuator("hello!") << '\n';
-	cout << depunctuator(".?;,!toad!") << '\n';
-	cout << depunctuator("the largest hot-to") << '\n';
-	cout << depunctuator("black, berry!") << '\n';
+	try
+	{
+	depunctuator_tests();
 	// De_abbreviation tests ==================
 	stringstream s = de_abbreviator("don't sweat the small stuff");
 	string sentence = s.str();
@@ -103,6 +145,18 @@ int main(){
 	s =  de_abbreviator("Can'T WON't Don't");
 	sentence = s.str();
 	cout << sentence << '\n';
-	
+	}
+
+	catch ( runtime_error& e )
+	{
+		cerr << "Runtime error: " << e.what() << '\n';
+		return 1;
+	}
+
+	catch ( ... )
+	{
+		cerr << "Unknown runtime error...\n";
+		return 1;
+	}
 	return 0;
 }
