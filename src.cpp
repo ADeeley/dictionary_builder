@@ -68,7 +68,7 @@ stringstream de_abbreviator(string s){
 			outstring << "will not ";
 		}
 		else 
-			outstring << word << " ";
+			outstring << lowerstring(word) << " ";
 	}
 
 	return outstring;
@@ -102,8 +102,25 @@ void depunctuator_tests(){
 		error( "depuctuation failiure" );
 }
 
-// ======== dictionary declaration and members ==============
+void de_abbreviator_tests(){
 
+	stringstream s = de_abbreviator("don't sweat the small stuff");
+	// cout << s.str() << '\n';
+	if (!( s.str() == "do not sweat the small stuff "))
+		error( "de_abbreviation failiure1" );
+
+	s =  de_abbreviator("You can't be serious!");
+	// cout << s.str() << '\n';
+	if (!( s.str() == "you cannot be serious! "))
+		error( "de_abbreviation failiure2" );
+
+	s =  de_abbreviator("Can'T WON't Don't");
+	// cout << s.str() << '\n';
+	if (!( s.str() == "cannot will not do not "))
+		error( "de_abbreviation failiure3" );
+}
+
+// ======== dictionary declaration and members ==============
 class dictionary{
 	public:
 		void add_word(string s);
@@ -135,16 +152,7 @@ int main(){
 	try
 	{
 	depunctuator_tests();
-	// De_abbreviation tests ==================
-	stringstream s = de_abbreviator("don't sweat the small stuff");
-	string sentence = s.str();
-	cout << sentence << '\n';
-	s =  de_abbreviator("You can't be serious!");
-	sentence = s.str();
-	cout << sentence << '\n';
-	s =  de_abbreviator("Can'T WON't Don't");
-	sentence = s.str();
-	cout << sentence << '\n';
+	de_abbreviator_tests();
 	}
 
 	catch ( runtime_error& e )
